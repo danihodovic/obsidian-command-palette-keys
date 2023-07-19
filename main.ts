@@ -10,7 +10,7 @@ const DEFAULT_SETTINGS: MyPluginSettings = {
 	mySetting: 'default'
 }
 
-function isKeyRelevant(document, event) {
+function isKeyRelevant(document: HTMLDocument, event: KeyboardEvent) {
 	return document.activeElement && document.activeElement.hasClass('prompt-input') && event.ctrlKey
 }
 
