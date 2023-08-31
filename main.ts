@@ -11,7 +11,14 @@ const DEFAULT_SETTINGS: MyPluginSettings = {
 }
 
 function isKeyRelevant(document: HTMLDocument, event: KeyboardEvent) {
-	return document.activeElement && document.activeElement.hasClass('prompt-input') && event.ctrlKey
+	if (!document.activeElement || !event.ctrlKey) {
+		return false;
+	}
+	const el = document.activeElement;
+	const isInOmniSearch = el.closest(".omnisearch-modal");
+	// The OmniSearch plugin already maps Ctrl-J and Ctrl-K and we don't want to duplicate the
+	// effort and jump twice.
+	return !isInOmniSearch && el.hasClass('prompt-input');
 }
 
 export default class MyPlugin extends Plugin {
