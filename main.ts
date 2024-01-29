@@ -1,4 +1,4 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import {App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting} from 'obsidian';
 
 // Remember to rename these classes and interfaces!
 
@@ -16,9 +16,10 @@ function isKeyRelevant(document: HTMLDocument, event: KeyboardEvent) {
 	}
 	const el = document.activeElement;
 	const isInOmniSearch = el.closest(".omnisearch-modal");
+	const isInAutoCompleteFile = el.closest(".cm-content")
 	// The OmniSearch plugin already maps Ctrl-J and Ctrl-K and we don't want to duplicate the
 	// effort and jump twice.
-	return !isInOmniSearch && el.hasClass('prompt-input');
+	return (!isInOmniSearch && el.hasClass('prompt-input')) || isInAutoCompleteFile;
 }
 
 export default class MyPlugin extends Plugin {
@@ -27,16 +28,16 @@ export default class MyPlugin extends Plugin {
 	async onload() {
 		await this.loadSettings();
 
-		document.addEventListener('keydown',(e) =>{
-			if (isKeyRelevant(document, e) && e.code == "KeyJ"){
+		document.addEventListener('keydown', (e) => {
+			if (isKeyRelevant(document, e) && e.code == "KeyJ") {
 				e.preventDefault();
-				document.dispatchEvent(new KeyboardEvent("keydown",{"key":"ArrowDown","code":"ArrowDown"}))
+				document.dispatchEvent(new KeyboardEvent("keydown", {"key": "ArrowDown", "code": "ArrowDown"}))
 			}
 		});
-		document.addEventListener('keydown',(e) =>{
-			if (isKeyRelevant(document, e) && e.code == "KeyK"){
+		document.addEventListener('keydown', (e) => {
+			if (isKeyRelevant(document, e) && e.code == "KeyK") {
 				e.preventDefault();
-				document.dispatchEvent(new KeyboardEvent("keydown",{"key":"ArrowUp","code":"ArrowUp"}))
+				document.dispatchEvent(new KeyboardEvent("keydown", {"key": "ArrowUp", "code": "ArrowUp"}))
 			}
 		});
 	}
