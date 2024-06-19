@@ -10,7 +10,7 @@ const DEFAULT_SETTINGS: MyPluginSettings = {
 	mySetting: 'default'
 }
 
-function isKeyRelevant(document: HTMLDocument, event: KeyboardEvent) {
+function isKeyRelevant(document: HTMLDocument, event: KeyboardEvent, isSuggesting: boolean) {
 	if (!document.activeElement || !event.ctrlKey) {
 		return false;
 	}
@@ -19,7 +19,7 @@ function isKeyRelevant(document: HTMLDocument, event: KeyboardEvent) {
 	const isInAutoCompleteFile = el.closest(".cm-content")
 	// The OmniSearch plugin already maps Ctrl-J and Ctrl-K and we don't want to duplicate the
 	// effort and jump twice.
-	return (!isInOmniSearch && el.hasClass('prompt-input')) || isInAutoCompleteFile;
+	return (!isInOmniSearch && el.hasClass('prompt-input')) || isInAutoCompleteFile || isSuggesting;
 }
 
 export default class MyPlugin extends Plugin {
@@ -29,13 +29,13 @@ export default class MyPlugin extends Plugin {
 		await this.loadSettings();
 
 		document.addEventListener('keydown', (e) => {
-			if (isKeyRelevant(document, e) && e.code == "KeyJ") {
+			if (isKeyRelevant(document, e) && e.code == "KeyJ", app.workspace.editorSuggest.currentSuggest) {
 				e.preventDefault();
 				document.dispatchEvent(new KeyboardEvent("keydown", {"key": "ArrowDown", "code": "ArrowDown"}))
 			}
 		});
 		document.addEventListener('keydown', (e) => {
-			if (isKeyRelevant(document, e) && e.code == "KeyK") {
+			if (isKeyRelevant(document, e) && e.code == "KeyK", app.workspace.editorSuggest.currentSuggest) {
 				e.preventDefault();
 				document.dispatchEvent(new KeyboardEvent("keydown", {"key": "ArrowUp", "code": "ArrowUp"}))
 			}
